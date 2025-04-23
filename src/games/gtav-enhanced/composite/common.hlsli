@@ -14,11 +14,31 @@ void ConfigureVanillaGrain(inout float grain_add, inout float grain_multiply) {
   grain_multiply = lerp(1.f, grain_multiply, CUSTOM_FILM_GRAIN);
 }
 
-float4 CustomToneMap(float3 untonemapped, float midgray, float3 post_effect_a,
+void ApplyPerChannelCorrection(float3 untonemapped,
+                               inout float vanilla_red,
+                               inout float vanilla_green,
+                               inout float vanilla_blue) {
+  if (RENODX_TONE_MAP_TYPE == 0.f) return;
+  if (CUSTOM_COLOR_GRADE_BLOWOUT_RESTORATION == 0.f
+      && CUSTOM_COLOR_GRADE_HUE_CORRECTION == 0.f
+      && CUSTOM_COLOR_GRADE_SATURATION_CORRECTION == 0.f) {
+    return;
+  }
+  float3 vanilla_color = float3(vanilla_red, vanilla_green, vanilla_blue);
+  float3 new_vanilla_color = renodx::draw::ApplyPerChannelCorrection(
+      untonemapped,
+      vanilla_color,
+      CUSTOM_COLOR_GRADE_BLOWOUT_RESTORATION,
+      CUSTOM_COLOR_GRADE_HUE_CORRECTION,
+      CUSTOM_COLOR_GRADE_SATURATION_CORRECTION);
+  vanilla_red = new_vanilla_color.r;
+  vanilla_green = new_vanilla_color.g;
+  vanilla_blue = new_vanilla_color.b;
+}
+
+float4 CustomToneMap(float3 untonemapped, float3 post_effect_a,
                      float3 post_effect_b, float post_effect_lerp,
                      float2 position) {
-  untonemapped *= midgray / 0.18f;
-
   float3 post_process_color = lerp(post_effect_a, post_effect_b, post_effect_lerp);
 
   untonemapped = max(0, untonemapped);
