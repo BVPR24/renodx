@@ -7,9 +7,6 @@ Texture2D<float4> BlitTexture : register(t0);
 
 // 3Dmigoto declarations
 #define cmp -
-//Texture1D<float4> IniParams : register(t120);
-//Texture2D<float4> StereoParams : register(t125);
-
 
 void main(
   float2 v0 : TEXCOORD0,
