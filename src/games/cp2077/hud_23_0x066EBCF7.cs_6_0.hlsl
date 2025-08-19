@@ -29,7 +29,7 @@ Texture2D<float4> _17 : register(t5, space0);
 Texture2D<float4> _18 : register(t6, space0);
 Texture3D<float4> _21 : register(t7, space0);
 Texture2D<float4> _22 : register(t8, space0);
-Buffer<uint4> _25 : register(t9, space0);
+StructuredBuffer<uint> _25 : register(t9, space0);
 Texture2D<float4> _26 : register(t10, space0);
 RWTexture2D<float4> _29 : register(u0, space0);
 RWTexture2D<float4> _30 : register(u1, space0);
@@ -364,7 +364,7 @@ void comp_main() {
     if (cb6[2u].x > 0.0f) {
       float4 _1891 = _17.SampleLevel(_50, float2(_1439, 1.0f - _1440), 0.0f);
 
-      if (injectedData.toneMapGammaCorrection >= 1.f) {
+      if (RENODX_GAMMA_CORRECTION >= 1.f) {
         _1891 = renodx::color::correct::Gamma(max(0.f, _1891));
       }
       _1902 = (cb6[2u].x * _1891.x) + _1712;
@@ -405,7 +405,7 @@ void comp_main() {
       float4 _2203 = _13.SampleLevel(_50, float2((cb6[7u].z * _1443) + _1439, (cb6[7u].w * _1444) + _1440), 2.0f);
       float4 _2218 = _13.SampleLevel(_50, float2((cb6[8u].x * _1443) + _1439, (cb6[8u].y * _1444) + _1440), 4.0f);
 
-      if (injectedData.toneMapGammaCorrection >= 1.f) {
+      if (RENODX_GAMMA_CORRECTION >= 1.f) {
         _2166 = renodx::color::correct::Gamma(max(0.f, _2166));
         _2170 = renodx::color::correct::Gamma(max(0.f, _2170));
         _2177 = renodx::color::correct::Gamma(max(0.f, _2177));
@@ -688,7 +688,7 @@ void comp_main() {
       float _1638 = cb6[13u].x * _1634;
       float3 _1652;
       if (injectedData.processingInternalSampling == 1.f) {
-        float3 pq_color = renodx::color::pq::Encode(float3(_1632, _1633, _1634), 100.f);
+        float3 pq_color = renodx::color::pq::Encode(float3(_1636, _1637, _1638), 100.f);
         _1652.rgb = renodx::lut::Sample(_21, _49, pq_color).rgb;
       } else {
         _1652.rgb = _21.SampleLevel(_49, float3((cb6[12u].x * log2(_1636)) + cb6[12u].y, (cb6[12u].x * log2(_1637)) + cb6[12u].y, (cb6[12u].x * log2(_1638)) + cb6[12u].y), 0.0f).rgb;

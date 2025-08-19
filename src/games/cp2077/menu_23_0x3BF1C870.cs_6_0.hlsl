@@ -24,9 +24,9 @@ Texture2D<float4> _15 : register(t2, space0);
 Texture2D<float4> _16 : register(t3, space0);
 Texture2D<float4> _17 : register(t5, space0);
 Texture2D<float4> _18 : register(t6, space0);
-Buffer<uint4> _21 : register(t7, space0);
+StructuredBuffer<uint> _21 : register(t7, space0);
 Texture2D<float4> _22 : register(t8, space0);
-Buffer<uint4> _23 : register(t9, space0);
+StructuredBuffer<float> _23 : register(t9, space0);
 RWTexture2D<float4> _26 : register(u0, space0);
 RWTexture2D<float4> _27 : register(u1, space0);
 SamplerState _46 : register(s0, space0);
@@ -39,8 +39,9 @@ struct SPIRV_Cross_Input {
 };
 
 void comp_main() {
-  uint4 _75 = _21.Load(gl_WorkGroupID.x);
-  uint _76 = _75.x;
+  // uint4 _75 = _21.Load(gl_WorkGroupID.x);
+  // uint _76 = _75.x;
+  uint _76 = _21.Load(gl_WorkGroupID.x);
   uint _84 = ((_76 << 4u) & 1048560u) + gl_LocalInvocationID.x;
   uint _85 = ((_76 >> 16u) << 4u) + gl_LocalInvocationID.y;
   float _86 = float(_84);
@@ -350,7 +351,7 @@ void comp_main() {
       float4 _1883 = _17.SampleLevel(_46, float2(_1487, 1.0f - _1488), 0.0f);
 
       // Custom
-      if (injectedData.toneMapGammaCorrection >= 1.f) {
+      if (RENODX_GAMMA_CORRECTION >= 1.f) {
         _1883 = renodx::color::correct::Gamma(max(0.f, _1883));
       }
 
@@ -393,7 +394,7 @@ void comp_main() {
       float4 _2143 = _13.SampleLevel(_46, float2((cb6[8u].x * _1491) + _1487, (cb6[8u].y * _1492) + _1488), 4.0f);
 
       // Custom
-      if (injectedData.toneMapGammaCorrection >= 1.f) {
+      if (RENODX_GAMMA_CORRECTION >= 1.f) {
         _2091 = renodx::color::correct::Gamma(max(0.f, _2091));
         _2095 = renodx::color::correct::Gamma(max(0.f, _2095));
         _2102 = renodx::color::correct::Gamma(max(0.f, _2102));
@@ -571,7 +572,7 @@ void comp_main() {
       float4 _649 = _14.Load(int3(uint2(_84 & 255u, _85 & 255u), 0u));
 
       // Custom: Replace Film Grain
-      if (injectedData.fxFilmGrain) {
+      if (injectedData.fxFilmGrain != 0.f) {
         float3 grainedColor = renodx::effects::ApplyFilmGrain(
             float3(_320, _321, _322),
             _649.xy,
